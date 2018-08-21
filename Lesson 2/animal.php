@@ -7,11 +7,7 @@
     <body>
      
  	<h1>Жестокое обращение с животными</h1>
-       <h2>Выполнено Эллис</h2>
-
-
 <?
-
 $planet = array (
     "Africa" => array ("Okapia johnstoni", "Antilocapra americana", "Viverra","Cercopithecus"),
 	
