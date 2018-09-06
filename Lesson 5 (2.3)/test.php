@@ -111,18 +111,20 @@ $testQuestionsArray = $testData['questions'];
  <?php endif; ?>
  <?php
  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $certificateTemplateUrl = __DIR__ . '\src\CertificateTemplate.png';
-  $userName = $_SESSION['userdata']['login'];
+  $sertificateTemplateUrl = __DIR__ . '\src\setificate-template.png';
+  $userName = $_POST['fio'] ? $_POST['fio'] : 'Unknown';
   $testsCount = count($testQuestionsArray);
   $correctTestsCount = count(array_filter($_POST, filterCorrect));
-  $image = imagecreatefrompng($certificateTemplateUrl);
+  $image = imagecreatefrompng($sertificateTemplateUrl);
   $blackColor = imagecolorexact($image, 0, 0, 0);
+  // Не получилось конвертировать русские символы, печатались крокозябры
+  // пробовал по методичкам и более 5 решений из интернета
   $font = __DIR__ . '\font\arial.ttf';
   imagettftext($image, 40, 0, 180, 450, $blackColor, $font, $userName);
   imagettftext($image, 20, 0, 180, 525, $blackColor, $font, $testName);
   imagettftext($image, 20, 0, 180, 650, $blackColor, $font, $correctTestsCount . '\\' . $testsCount);
   header('Content-Type: image/png');
-  imagepng($image, __DIR__ .'Certificate.png');
+  imagepng($image);
   imagedestroy($image);
   exit;
 }
