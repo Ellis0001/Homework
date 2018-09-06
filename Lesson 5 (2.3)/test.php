@@ -5,7 +5,6 @@ if (empty($_GET) && empty($_POST)) {
 }
 if (!empty($_GET) && (!isset($_GET['testid']) || empty($_GET['testid']))) {
   exit('Передайте параметр testid');
-
 } elseif (!empty($_POST) && (!isset($_POST['testid']) || empty($_POST['testid']))) {
   exit('Тест прошёл не корректно');
 }
@@ -14,8 +13,6 @@ if (!empty($_GET['testid'])) {
 } else {
   $testId = $_POST['testid'];
 }
-
-
 if (!file_exists($testsDir . $testId . '.json')) {
   http_response_code(404);
   exit("$testId не найден");
@@ -30,7 +27,6 @@ if (empty($testData['questions'])) {
   exit('Пустой тест');
 }
 $testQuestionsArray = $testData['questions'];
-
 ?>
 
 
@@ -85,7 +81,12 @@ $testQuestionsArray = $testData['questions'];
   <?php endforeach; ?>
 
   <input type="hidden" name="testid" value="<?php echo $testId; ?>" />
-  <input type="submit" placeholder="Отправить"/>
+  
+  <fieldset>
+    Ваши ФИО : <input name="fio" type="text"><br />
+  </fieldset>
+  <input type="submit" placeholder="Получить Сертификат"/>
+  
 </form>
 
 <?php elseif (!empty($_POST)): ?>
@@ -107,11 +108,27 @@ $testQuestionsArray = $testData['questions'];
       </li>
     <?php endforeach; ?>
   </ul>
-  <form enctype="multipart/form-data" action="test.php" method="POST">
-ФИО: <input name="fio" type="text" placeholder="Введите Ваши ФИО">
-<br />
-<input type="submit" value="Получить Сертификат">
-</form>
-<?php endif; ?>
+ <?php endif; ?>
+ <?php
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $certificateTemplateUrl = __DIR__ . '\src\CertificateTemplate.png';
+  $userName = $_SESSION['userdata']['login'];
+  $testsCount = count($testQuestionsArray);
+  $correctTestsCount = count(array_filter($_POST, filterCorrect));
+  $image = imagecreatefrompng($certificateTemplateUrl);
+  $blackColor = imagecolorexact($image, 0, 0, 0);
+  $font = __DIR__ . '\font\arial.ttf';
+  imagettftext($image, 40, 0, 180, 450, $blackColor, $font, $userName);
+  imagettftext($image, 20, 0, 180, 525, $blackColor, $font, $testName);
+  imagettftext($image, 20, 0, 180, 650, $blackColor, $font, $correctTestsCount . '\\' . $testsCount);
+  header('Content-Type: image/png');
+  imagepng($image, __DIR__ .'Certificate.png');
+  imagedestroy($image);
+  exit;
+}
+function filterCorrect($value) {
+  return $value === 'correct';
+}
+?>
 </body>
 </html>

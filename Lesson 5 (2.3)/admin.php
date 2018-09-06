@@ -1,16 +1,4 @@
-<?php
-$uploaddir = __DIR__ . '/Tests/';
-if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploaddir .
-  $_FILES['userfile']['name'])) {
 
-<!-- Добавлен редирект -->
-  header('location: ./list.php');
-exit();
-
-} else {
-  print "Ошибка";
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +18,17 @@ exit();
 <input type="submit" value="Send File">
 </form>
 
-
+<?php
+$uploaddir = __DIR__ . '/Tests/';
+if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploaddir .
+    $_FILES['userfile']['name'])) {
+    print "Файл загружен.";
+	 header('location: ./list.php');
+exit();
+} else {
+    print "Ошибка";
+}
+?>
 
   <style>
     div {
