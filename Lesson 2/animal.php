@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
     <head>
@@ -7,11 +8,15 @@
     <body>
      
  	<h1>Жестокое обращение с животными</h1>
+       <h2>Выполнено Эллис</h2>
+
+
 <?
+
 $planet = array (
     "Africa" => array ("Okapia johnstoni", "Antilocapra americana", "Viverra","Cercopithecus"),
 	
-	"Europe" => array("Sciuromorpha","Cricetinae","Castor canadensis","Amynodontidae"),
+	"Europe" => array("Sciuromorpha","Cricetinae","Castor canadensis","Amynodontidae Normale Supernormale"),
 	
 	"Asia" => array ("Panthera leo persica","Panthera tigris","Rhinoceros unicornis"),
 	
@@ -40,17 +45,33 @@ echo '<pre>';
       $splitContinents['source'][$continent] = []; 
    
       foreach ($ArrayOfAnimals as $animal) { 
-          $TwoWordName = substr_count($animal, ' '); 
-   
+          $TwoWordName = substr_count($animal, ' ');
+
+
           if ($TwoWordName) { 
-              list($FirstWord, $SecondWord) = explode(' ', $animal); 
-               
+              list($FirstWord, $SecondWord, $ThirdWord) = explode(' ', $animal); 
+              
+              // ниже условие не пропускает названия, состоящие более чем из двух слов 
+               if ($ThirdWord){
+                    //echo "В названии три слова";
+                    
+                }else{
               $splitContinents['source'][$continent][] = $FirstWord; 
               $splitContinents['data'][] = $SecondWord; 
+               // var_dump($SecondWord);
+               // var_dump($ThirdWord);
+               // echo "<br>";
+                }
+               
           } 
+          
+            
       } 
+      
   } 
-   
+  
+
+
   shuffle($splitContinents['data']); 
    
   foreach ($splitContinents['source'] as $continent => $firstWordsArray) { 
@@ -60,12 +81,16 @@ echo '<pre>';
       foreach ($firstWordsArray as $FirstWord) { 
         if (count($splitContinents['data'])) { 
           $result[] = $FirstWord . ' ' . array_pop($splitContinents['data']); 
+          
         } 
       } 
    
       echo '<p>', implode(', ', $result), '</p>'; 
+      
   } 
    
+
+  
  ?>
 
    </body>
