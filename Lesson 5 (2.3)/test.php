@@ -1,9 +1,14 @@
 <?php
 $testsDir = __DIR__ . '/Tests/';
 if (empty($_GET) && empty($_POST)) {
+ 
+ /*Добавлен статус ответа 400 */ 
+  http_response_code(400);
   exit('Не переданы параметры');
 }
 if (!empty($_GET) && (!isset($_GET['testid']) || empty($_GET['testid']))) {
+ /*И тут добавлен статус ответа 400 */ 
+  http_response_code(400);
   exit('Передайте параметр testid');
 } elseif (!empty($_POST) && (!isset($_POST['testid']) || empty($_POST['testid']))) {
   exit('Тест прошёл не корректно');
@@ -27,6 +32,28 @@ if (empty($testData['questions'])) {
   exit('Пустой тест');
 }
 $testQuestionsArray = $testData['questions'];
+
+/*Кусок кода для создания Сертификата перемещён перед html кодом*/
+
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $sertificateTemplateUrl = __DIR__ . '\src\CertificateTemplate.png';
+  $userName = $_POST['fio'] ? $_POST['fio'] : 'Unknown';
+  $testsCount = count($testQuestionsArray);
+  $correctTestsCount = count(array_filter($_POST, filterCorrect));
+  $image = imagecreatefrompng($sertificateTemplateUrl);
+  $blackColor = imagecolorexact($image, 0, 0, 0);
+  $font = __DIR__ . '\font\arial.ttf';
+  imagettftext($image, 40, 0, 180, 450, $blackColor, $font, $userName);
+  imagettftext($image, 20, 0, 180, 525, $blackColor, $font, $testName);
+  imagettftext($image, 20, 0, 180, 650, $blackColor, $font, $correctTestsCount . '\\' . $testsCount);
+  header('Content-Type: image/png');
+  imagepng($image);
+  imagedestroy($image);
+  exit;
+}
+function filterCorrect($value) {
+  return $value === 'correct';
+}
 ?>
 
 
@@ -109,26 +136,6 @@ $testQuestionsArray = $testData['questions'];
     <?php endforeach; ?>
   </ul>
  <?php endif; ?>
- <?php
- if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $sertificateTemplateUrl = __DIR__ . '\src\CertificateTemplate.png';
-  $userName = $_POST['fio'] ? $_POST['fio'] : 'Unknown';
-  $testsCount = count($testQuestionsArray);
-  $correctTestsCount = count(array_filter($_POST, filterCorrect));
-  $image = imagecreatefrompng($sertificateTemplateUrl);
-  $blackColor = imagecolorexact($image, 0, 0, 0);
-  $font = __DIR__ . '\font\arial.ttf';
-  imagettftext($image, 40, 0, 180, 450, $blackColor, $font, $userName);
-  imagettftext($image, 20, 0, 180, 525, $blackColor, $font, $testName);
-  imagettftext($image, 20, 0, 180, 650, $blackColor, $font, $correctTestsCount . '\\' . $testsCount);
-  header('Content-Type: image/png');
-  imagepng($image);
-  imagedestroy($image);
-  exit;
-}
-function filterCorrect($value) {
-  return $value === 'correct';
-}
-?>
+ 
 </body>
 </html>
