@@ -1,118 +1,103 @@
-/* Примемр Для ДЗ */
-
 <?php
-try {
-    $dbh = new PDO('mysql:host=localhost;dbname=shop', 'root', '');
-    foreach($dbh->query('SELECT * from books') as $row) {
-        print_r($row);
-    }
-    $dbh = null;
-} catch (PDOException $e) {
-    print "Error!: " . $e->getMessage() . "<br/>";
-    die();
-}
-?>
-
-<?php
-/*
-define ('DB_DRIVER','mysql');
-define ('DB_HOST','localhost');
-define ('DB_NAME','shop');
-define ('DB_USER','root');
-define ('DB_PASS','');
-
-try
-
-{
-	//$connect_str = DB_DRIVER . ':host='. DB_HOST . ';dbname=' . DB_NAME;
-
-	//$db = new PDO($connect_str, DB_USER, DB_PASS);
-	
-	$pdo=new PDO('mysql:host=localhost;dbname=netology4.1, charset=utf8','root','');
-	$sth=$dbh->prepare("SELECT * FROM shop");
-	$sth->execute();
-	print ("Извлечние всех оставшихся строк результирующего набора:\n");
-	
-	$result=$sth->fetchAll(PDO::FETCH_ASSOC);
-	
-	print_r($result);
-}
-
-catch(PDOException $e){
-	
-	die ("Error")
-	
-}
-	
-
-
-/*<?php
 include "config.php";
-$sql = "select*from shop";
-
+$sql = "SELECT `name`, `author` , `year`, `isbn`, `genre` FROM `books`";
 $res = mysqli_query ($connect, $sql);
 
-while ($data=mysqli_fetch_assoc($res)) {
-	echo "Автомобиль ".$data['name']." стоит ".$data['price']. "<br>";
-	
-	
-}
-
-echo "Hello";
-
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Библиотека</title>
+</head>
+<body>
 
-<?php
+<style>
+    table { 
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
 
-//PDO Method
+    table td, table th {
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+    
+    table th {
+        background: #eee;
+    }
+</style>
+<h1>Библиотека</h1>
 
-$sql ="SELECT * FROM shop WHERE name = ? & age = ?";
-
-//Чтобы запросить студента с именем Вася из PHP
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute(["Вася", 25]);
-$vasya = $stmt->fetch();
-
-//Более безопасно, Защищает от PHP инъекций
-
-$id = (int)$_GET[id];
-
-//Защита от js инъекций
-strip_tags($_GET[NAME])
-
-// Именованные плейс холдеры
-
-$sql ="SELECT * FROM shop WHERE name = :name";
-
-
-
-$stmt = $pdo->prepare($sql); , PDO::int
-$stmt->execute(["name" => "Вася"]);
-$vasya = $stmt->fetch();
-
-//Для ДЗ
-
-<?php
-
-
-$sth = $db->prepare("SELECT fio, age FROM students");
-$sth->execute();
-/* Извлечение всех оставшихся строк результирующего набора*/
-/*print ("Извлечение всех оставшихся строк результирующего набора:\n");
-$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-print_r($result);
-?>*/
+<form method="GET">
+    <input type="text" name="isbn" placeholder="ISBN" value="" />
+    <input type="text" name="name" placeholder="Название книги" value="" />
+    <input type="text" name="author" placeholder="Автор книги" value="" />
+    <input type="submit" value="Поиск" />
+</form>
 
 
+<table>
+    <tbody>
+    <tr>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Год выпуска</th>
+        <th>ISBN</th>
+        <th>Жанр</th>
+    </tr>
+    <?php
+ 
+    $connection = mysqli_connect('localhost', 'root', '', 'books');
+ 
+    if ( $connection == false)
+    {
+        echo 'Не удалось подключиться к базе данных books!<br>';
+        echo mysqli_connection_error();
+        die();
+    } else {
+        echo 'Мы подключились к БД "books"' . '<br>';
+    }
+ 
+ 
+    If(isset($_GET['isbn']) OR ($_GET['name']) OR ($_GET['author'])) {
+        $requestISBN = "SELECT `name`, `author`, `year`, `isbn`, `genre` FROM `books` WHERE `isbn` LIKE '%" . $_GET['isbn'] . "%'
+       AND `name` LIKE '%" . $_GET['name'] . "%' AND `author` LIKE '%" . $_GET['author'] . "%' ";
+        $query = mysqli_query($connect, $requestISBN);
+        while ($row = mysqli_fetch_assoc($query))
+        {
+            echo '<tr>';
+            echo '<td>' . $row['name'] . '</td>';
+            echo '<td>' . $row['author'] . '</td>';
+            echo '<td>' . $row['year'] . '</td>';
+            echo '<td>' . $row['isbn'] . '</td>';
+            echo '<td>' . $row['genre'] . '</td>';
+            echo '</tr>';
+        }
+    } else {
+ 
+ 
+        $query = mysqli_query($connect, $sql);
+ 
+        while ($row = mysqli_fetch_assoc($query))
+        {
+            echo '<tr>';
+            echo '<td>' . $row['name'] . '</td>';
+            echo '<td>' . $row['author'] . '</td>';
+            echo '<td>' . $row['year'] . '</td>';
+            echo '<td>' . $row['isbn'] . '</td>';
+            echo '<td>' . $row['genre'] . '</td>';
+            echo '</tr>';
+        }
+    }
+ 
+    ?>
+ 
+</table>
+</tbody>
 
-
-
-
-
-
-
-
-
-
+</body>
+</html>
