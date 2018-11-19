@@ -1,6 +1,16 @@
 <?php
 include "config.php";
-$sql = "SELECT `name`, `author` , `year`, `isbn`, `genre` FROM `books`";
+
+$name = !empty($_GET['name']) ? $_GET['name'] : '';
+$author = !empty($_GET['author']) ? $_GET['author'] : '';
+$isbn = !empty($_GET['isbn']) ? $_GET['isbn'] : '';
+
+
+
+
+$sql = "SELECT `name`, `author` , `year`, `isbn`, `genre` 
+        FROM `books`
+        WHERE 'isbn' LIKE '%$isbn%' AND 'name' LIKE '%$name' AND 'author' LIKE '%$author%' ";
 $res = mysqli_query ($connect, $sql);
 
 ?>
@@ -33,9 +43,9 @@ $res = mysqli_query ($connect, $sql);
 <h1>Библиотека</h1>
 
 <form method="GET">
-    <input type="text" name="isbn" placeholder="ISBN" value="" />
-    <input type="text" name="name" placeholder="Название книги" value="" />
-    <input type="text" name="author" placeholder="Автор книги" value="" />
+    <input type="text" name="isbn" placeholder="ISBN" value="<?=$isbn ?>" />
+    <input type="text" name="name" placeholder="Название книги" value="<?=$name ?>" />
+    <input type="text" name="author" placeholder="Автор книги" value="<?=$author ?>" />
     <input type="submit" value="Поиск" />
 </form>
 
@@ -51,22 +61,6 @@ $res = mysqli_query ($connect, $sql);
     </tr>
     <?php
  
-    $connection = mysqli_connect('localhost', 'root', '', 'books');
- 
-    if ( $connection == false)
-    {
-        echo 'Не удалось подключиться к базе данных books!<br>';
-        echo mysqli_connection_error();
-        die();
-    } else {
-        echo 'Мы подключились к БД "books"' . '<br>';
-    }
- 
- 
-    If(isset($_GET['isbn']) OR ($_GET['name']) OR ($_GET['author'])) {
-        $requestISBN = "SELECT `name`, `author`, `year`, `isbn`, `genre` FROM `books` WHERE `isbn` LIKE '%" . $_GET['isbn'] . "%'
-       AND `name` LIKE '%" . $_GET['name'] . "%' AND `author` LIKE '%" . $_GET['author'] . "%' ";
-        $query = mysqli_query($connect, $requestISBN);
         while ($row = mysqli_fetch_assoc($query))
         {
             echo '<tr>';
@@ -95,9 +89,9 @@ $res = mysqli_query ($connect, $sql);
     }
  
     ?>
- 
+     </tbody> 
 </table>
-</tbody>
+
 
 </body>
 </html>
