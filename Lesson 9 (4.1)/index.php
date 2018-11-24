@@ -60,20 +60,18 @@ $res = mysqli_query ($connect, $sql);
         <th>Жанр</th>
     </tr>
     <?php
- 
-        while ($row = mysqli_fetch_assoc($query))
-        {
-            echo '<tr>';
-            echo '<td>' . $row['name'] . '</td>';
-            echo '<td>' . $row['author'] . '</td>';
-            echo '<td>' . $row['year'] . '</td>';
-            echo '<td>' . $row['isbn'] . '</td>';
-            echo '<td>' . $row['genre'] . '</td>';
-            echo '</tr>';
-        }
+
+
+
+if ( $connect == false)
+    {
+        echo 'Не удалось подключиться к базе данных books!<br>';
+        echo mysqli_connection_error();
+        die();
     } else {
- 
- 
+        echo 'Мы подключились к БД "books"' . '<br>';
+    }
+  
         $query = mysqli_query($connect, $sql);
  
         while ($row = mysqli_fetch_assoc($query))
@@ -86,7 +84,6 @@ $res = mysqli_query ($connect, $sql);
             echo '<td>' . $row['genre'] . '</td>';
             echo '</tr>';
         }
-    }
  
     ?>
      </tbody> 
